@@ -1,6 +1,6 @@
 # Copyright 2021 The MathWorks, Inc.
 
-# Argument shared across multi-stage build to hold location of installed MATLAB 
+# Argument shared across multi-stage build to hold location of installed MATLAB
 ARG BASE_ML_INSTALL_LOC=/tmp/matlab-install-location
 
 # Replace "mathworks/matlab:r2021b" with any Docker image that contains MATLAB
@@ -9,7 +9,7 @@ FROM mathworks/matlab:r2021b AS matlab-install-stage
 ARG BASE_ML_INSTALL_LOC
 
 # Run code to locate a MATLAB install in the base image and softlink
-# to BASE_ML_INSTALL_LOC for a latter stage to copy 
+# to BASE_ML_INSTALL_LOC for a latter stage to copy
 RUN export ML_INSTALL_LOC=$(which matlab) \
     && if [ ! -z "$ML_INSTALL_LOC" ]; then \
         ML_INSTALL_LOC=$(dirname $(dirname $(readlink -f ${ML_INSTALL_LOC}))); \
@@ -21,7 +21,10 @@ RUN export ML_INSTALL_LOC=$(which matlab) \
         echo "Proceeding with user provided path to MATLAB installation: ${BASE_ML_INSTALL_LOC}"; \
     fi
 
-FROM jupyter/base-notebook
+
+ARG OWNER=jupyter
+ARG BASE_CONTAINER=$OWNER/base-notebook
+FROM $BASE_CONTAINER
 ARG BASE_ML_INSTALL_LOC
 
 # Switch to root user
