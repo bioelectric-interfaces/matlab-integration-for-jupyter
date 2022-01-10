@@ -3,6 +3,10 @@
 # Argument shared across multi-stage build to hold location of installed MATLAB
 ARG BASE_ML_INSTALL_LOC=/tmp/matlab-install-location
 
+# Arguments for base notebook container
+ARG OWNER=jupyter
+ARG BASE_CONTAINER=$OWNER/base-notebook
+
 # Replace "mathworks/matlab:r2021b" with any Docker image that contains MATLAB
 # MATLAB should be available on the path in the Docker image
 FROM mathworks/matlab:r2021b AS matlab-install-stage
@@ -22,8 +26,6 @@ RUN export ML_INSTALL_LOC=$(which matlab) \
     fi
 
 
-ARG OWNER=jupyter
-ARG BASE_CONTAINER=$OWNER/base-notebook
 FROM $BASE_CONTAINER
 ARG BASE_ML_INSTALL_LOC
 
